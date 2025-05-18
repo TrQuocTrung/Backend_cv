@@ -7,10 +7,15 @@ import { compareSync, genSaltSync, hashSync } from "bcryptjs";
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import aqp from 'api-query-params';
 import mongoose from 'mongoose';
+import { USER_ROLE } from 'src/databases/sampleData';
+import { Role, RoleDocument } from 'src/roles/schema/role.schema';
+import path from 'path';
 @Injectable()
 export class UsersService {
 
-  constructor(@InjectModel(User.name) private UserModel: SoftDeleteModel<UserDocument>) { }
+  constructor(@InjectModel(User.name) private UserModel: SoftDeleteModel<UserDocument>,
+    @InjectModel(Role.name) private RoleModel: SoftDeleteModel<RoleDocument>
+  ) { }
   // private UserModel: Model<User>
   // constructor(@InjectModel(User.name) userModel: Model<User>) {
   //   this.UserModel = userModel; 
@@ -22,15 +27,13 @@ export class UsersService {
     return hash;
   }
   async create(createUserDto: CreateUserDto, currentUser: { id: string, email: string }) {
-    const hashpassword = this.hashPassword(createUserDto.password)
-    if (createUserDto.role) {
-      createUserDto.role = new mongoose.Types.ObjectId(createUserDto.role);
-    }
+    const hashpassword = await this.hashPassword(createUserDto.password)
+    const userRole = await this.RoleModel.findOne({ name: USER_ROLE })
     let user = await this.UserModel.create({
       name: createUserDto.name,
       email: createUserDto.email,
       password: hashpassword,
-      role: createUserDto.role,
+      role: userRole?.id,
       age: createUserDto.age,
       gender: createUserDto.gender,
       address: createUserDto.address,
@@ -89,13 +92,15 @@ export class UsersService {
   }
 
   async findOne(id: string) {
-    let user = await this.UserModel.findOne({ _id: id }).select("-password").populate({ path: "role", select: { name: 1, _id: 1 } })
+    let user = await this.UserModel.findOne({ _id: id }).select("-password").populate({ path: "role", select: { name: 1 } })
     return user;
   }
 
   async findOnebyEmail(email: string) {
     let user = await this.UserModel.findOne({ email: email })
-      .populate({ path: "role", select: { name: 1, permission: 1 } })
+      .populate({
+        path: "role", select: { name: 1, permissions: 1 }
+      })
     return user;
   }
   IsvalidcheckUserpassword(password: string, hashpassword: string) {
@@ -133,6 +138,9 @@ export class UsersService {
     }, { refresh_token })
   }
   async finduserByToken(refresh_token: string) {
-    return await this.UserModel.findOne({ refresh_token })
+    return await this.UserModel.findOne({ refresh_token }).populate({
+      path: "role",
+      select: { name: 1 }
+    })
   }
 }

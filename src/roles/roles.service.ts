@@ -7,6 +7,8 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { throwError } from 'rxjs';
 import { IUser } from 'src/users/user.interface';
 import aqp from 'api-query-params';
+import { ADMIN_ROLE } from 'src/databases/sampleData';
+import mongoose from 'mongoose';
 
 @Injectable()
 export class RolesService {
@@ -46,7 +48,13 @@ export class RolesService {
   }
 
   async findOne(id: string) {
-    return await this.roleModel.findById({ _id: id });
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestException("not found role")
+    }
+    return await this.roleModel.findById(id).populate({
+      path: "permissions",
+      select: { _id: 1, apiPath: 1, name: 1, method: 1, module: 1 }
+    });
   }
 
   async update(id: string, updateRoleDto: UpdateRoleDto, user: IUser) {
@@ -65,7 +73,7 @@ export class RolesService {
 
   async remove(id: string, user: IUser) {
     const foundRole = await this.roleModel.findById({ _id: id })
-    if (foundRole!.name === "ADMIN") {
+    if (foundRole!.name === ADMIN_ROLE) {
       throw new BadRequestException("Không Thể Xóa Role ADMIN")
     }
     await this.roleModel.updateOne({ _id: id }, {

@@ -7,6 +7,8 @@ import { Permission, PermissionShema } from 'src/permissions/schema/permission.s
 import { Role, Roleschema } from 'src/roles/schema/role.schema';
 import { UsersService } from 'src/users/users.service';
 import { RolesService } from 'src/roles/roles.service';
+import { PermissionsService } from 'src/permissions/permissions.service';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
@@ -14,9 +16,10 @@ import { RolesService } from 'src/roles/roles.service';
       { name: User.name, schema: UserSchema },
       { name: Permission.name, schema: PermissionShema },
       { name: Role.name, schema: Roleschema }
-    ])
+    ]),
+    UsersModule
   ],
   controllers: [DatabasesController],
-  providers: [DatabasesService, UsersService, RolesService],
+  providers: [DatabasesService, UsersService, RolesService, PermissionsService],
 })
 export class DatabasesModule { }

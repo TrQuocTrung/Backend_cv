@@ -5,11 +5,13 @@ import { LocalAuthGuard } from './local-auth.guard';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { IUser } from 'src/users/user.interface';
 import { Request, Response } from 'express';
+import { RolesService } from 'src/roles/roles.service';
 
 @Controller("auth")
 export class AuthController {
     constructor(
-        private readonly authService: AuthService
+        private readonly authService: AuthService,
+        private readonly roleService: RolesService
     ) { }
     @Public()
     @UseGuards(LocalAuthGuard)
@@ -30,8 +32,10 @@ export class AuthController {
     }
     @ResponseMessage("Get user information")
     @Get('/account')
-    getProfileuser(@User() user: IUser) {
-        return user;
+    async getProfileuser(@User() user: IUser) {
+        const temp = await this.roleService.findOne(user.role._id) as any;
+        user.permission = temp.permission;
+        return { user };
     }
     @Public()
     @ResponseMessage("Get User By Freshesh token")
