@@ -14,3 +14,6 @@ export const User = createParamDecorator(
 );
 export const RESPONSE_MESSAGE = "respone_message"
 export const ResponseMessage = (message: string) => SetMetadata(RESPONSE_MESSAGE, message)
+
+export const IS_PUBLIC_PERMISSION = "isPublicPermission";
+export const skipcheckPermission = () => SetMetadata(IS_PUBLIC_PERMISSION, true)

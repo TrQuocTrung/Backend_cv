@@ -13,6 +13,7 @@ import { PermissionsModule } from './permissions/permissions.module';
 import { RolesModule } from './roles/roles.module';
 import { DatabasesModule } from './databases/databases.module';
 import { SubscribersModule } from './subscribers/subscribers.module';
+import { MailModule } from './mail/mail.module';
 const { softDeletePlugin } = require('soft-delete-plugin-mongoose');
 
 @Module({
@@ -40,6 +41,7 @@ const { softDeletePlugin } = require('soft-delete-plugin-mongoose');
     RolesModule,
     DatabasesModule,
     SubscribersModule,
+    MailModule,
 
   ],
   controllers: [AppController],

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông Báo Tuyển Dụng</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background: #007bff;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 20px 0;
+            background: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+            padding: 10px;
+        }
+
+        .job {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .job h3 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Thông Báo Tuyển Dụng</h1>
+        </div>
+        <div class="content">
+            <p>Xin chào {{receiver.name}},</p>
+            <p>Chúng tôi rất vui mừng gửi đến bạn những cơ hội việc làm phù hợp với kỹ năng của bạn:</p>
+
+            {{#each job}}
+            <div class="job">
+                <h3>Vị trí: {{this.name}}</h3>
+                <p><strong>Công ty:</strong> {{this.company}}</p>
+                <p><strong>Mức lương:</strong> {{this.salary}}</p>
+                <p><strong>Kỹ năng yêu cầu:</strong> {{#each this.skills}}<span>{{this}}{{#unless @last}},
+                        {{/unless}}</span>{{/each}}</p>
+            </div>
+            {{/each}}
+
+            <p>Nếu bạn quan tâm đến bất kỳ vị trí nào ở trên, hãy gửi CV của bạn về <a
+                    href="mailto:support@example.com">support@example.com</a>.</p>
+
+            <a href="https://your-application-link.com" class="button">Ứng Tuyển Ngay</a>
+        </div>
+        <div class="footer">
+            <p>Đây là email tự động, vui lòng không trả lời trực tiếp. Nếu có thắc mắc, liên hệ <a
+                    href="mailto:support@example.com">support@example.com</a>.</p>
+            <p>&copy; {{year}} Nice App. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+
+</html>
